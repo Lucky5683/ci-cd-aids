@@ -37,3 +37,11 @@ jobs:
       - name: Push Docker image to Docker Hub
         run: |
           docker push ${{ secrets.DOCKER_USERNAME }}/ci-cd-app:latest
+
+      - name: Disable Docker Buildx
+        run: docker buildx disable
+
+      - name: Check Docker version
+        run: docker --version
+
+
