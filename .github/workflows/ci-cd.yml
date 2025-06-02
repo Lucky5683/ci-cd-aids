@@ -27,9 +27,6 @@ jobs:
           pip install pytest
           pytest -v
 
-      - name: Set up Docker Buildx (optional, only if you REALLY want buildx)
-        uses: docker/setup-buildx-action@v3
-
       - name: Log in to Docker Hub
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
