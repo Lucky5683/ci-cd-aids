@@ -13,6 +13,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: List files for debug
+        run: ls -R
+
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
         with:
@@ -22,7 +25,7 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
-          context: ./ci-cd-aids
-          file: ./ci-cd-aids/Dockerfile
+          context: .          # Repo root is the context
+          file: ./Dockerfile  # Dockerfile at root
           push: true
           tags: Lucky5683/ci-cd-app:latest
