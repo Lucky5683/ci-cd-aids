@@ -21,6 +21,6 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: ./ci-cd-aids
-          file: ./ci-cd-aids/Dockerfile
+          file: ./ci-cd/Dockerfile
           push: true
           tags: lucky5683/ci-cd-app:latest
