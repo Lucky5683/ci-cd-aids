@@ -15,7 +15,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.13'
+          python-version: 3.13
 
       - name: Install dependencies
         run: |
@@ -26,6 +26,9 @@ jobs:
         run: |
           pip install pytest
           pytest -v
+
+      - name: Set up Docker Buildx (optional, only if you REALLY want buildx)
+        uses: docker/setup-buildx-action@v3
 
       - name: Log in to Docker Hub
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
