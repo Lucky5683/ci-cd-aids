@@ -3,10 +3,10 @@ name: Build and Push Docker Image
 on:
   push:
     branches:
-      - main  # or whichever branch you want to trigger on
+      - main
 
 jobs:
-  build-and-push:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -22,8 +22,7 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
-          context: ./ci-cd            # build context folder (where Dockerfile & app files are)
-          file: ./ci-cd/Dockerfile    # path to your Dockerfile
-          push: true                  # push image to Docker Hub
-          tags: yourdockerhubusername/ci-cd-app:latest  # your Docker image name
-
+          context: ./ci-cd-aids
+          file: ./ci-cd-aids/Dockerfile
+          push: true
+          tags: Lucky5683/ci-cd-app:latest
