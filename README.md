@@ -1,153 +1,273 @@
+# CI/CD Pipeline for Flask & Machine Learning Applications
 
+## Overview
 
-## 1. Objective
+This project demonstrates the implementation of automated CI/CD workflows for Python-based applications using **GitHub Actions, Docker, Flask, Pytest, and Scikit-learn**.
 
-The objective of this project is to implement two fully automated CI/CD pipelines:
+The project contains two application workflows:
 
-1. A simple Flask web application
-2. A Flask application serving a trained machine learning model
+1. A basic Flask web application
+2. A Flask application that serves predictions from a trained Random Forest machine learning model
 
-Both pipelines are executed using GitHub Actions and Docker, aiming to simulate real-world DevOps workflows in a cost-effective, cloud-free environment.
+The objective is to demonstrate how automated testing and containerization can be integrated into the development workflow.
 
----
+## Architecture
 
-## 2. Tools and Technologies Used
-
-* Python 3.10 — Backend language for both applications
-* Flask — Web framework
-* Scikit-learn — Machine learning model training
-* Git & GitHub — Version control and CI/CD pipeline hosting
-* GitHub Actions — Automation of testing and deployment
-* Docker — Containerization of the application
-* Docker Hub (Optional) — Container registry (if enabled)
-* Pytest — Unit testing framework
-
----
-
-## 3. Project Structure
-
+```text
+                    GitHub Repository
+                           │
+                           ▼
+                    GitHub Actions
+                           │
+                 ┌─────────┴─────────┐
+                 │                   │
+                 ▼                   ▼
+          Flask Application      ML Flask Application
+                 │                   │
+                 │             Random Forest Model
+                 │                   │
+                 └─────────┬─────────┘
+                           ▼
+                     Automated Tests
+                         Pytest
+                           │
+                           ▼
+                       Docker Build
+                           │
+                           ▼
+                       Docker Image
 ```
-.
+
+## Tech Stack
+
+| Category | Technology |
+|---|---|
+| Programming Language | Python 3.10 |
+| Web Framework | Flask |
+| Machine Learning | Scikit-learn |
+| ML Model | Random Forest |
+| Testing | Pytest |
+| Containerization | Docker |
+| Local Containers | Docker Compose |
+| CI/CD | GitHub Actions |
+| Version Control | Git & GitHub |
+| Model Serialization | Joblib |
+
+## Project Features
+
+- Flask web application
+- Machine learning prediction application
+- Random Forest model training
+- Automated unit testing
+- Docker containerization
+- Docker Compose support
+- GitHub Actions CI/CD workflow
+- Automated testing with Pytest
+- Docker image build and deployment workflow
+
+## Project Structure
+
+```text
+ci-cd-aids/
+│
+├── .github/
+│   └── workflows/
+│       └── ci-cd.yml
+│
 ├── app.py
 ├── train_model.py
 ├── random_forest_model.joblib
 ├── data.csv
+│
 ├── test_app.py
 ├── test_model.py
+│
 ├── Dockerfile
 ├── docker-compose.yml
 ├── requirements.txt
-└── .github/workflows/
-    └── ci-cd.yml
+├── .gitignore
+└── README.md
 ```
 
----
+## Machine Learning Workflow
 
-## 4. CI/CD Pipeline Description
+The machine learning component follows this workflow:
 
-### 4.1 Pipeline for Basic Flask App
+```text
+Dataset
+  │
+  ▼
+data.csv
+  │
+  ▼
+train_model.py
+  │
+  ▼
+Random Forest Model
+  │
+  ▼
+random_forest_model.joblib
+  │
+  ▼
+Flask Application
+  │
+  ▼
+Prediction API
+```
 
-* Triggered on push to `main` branch
-* Steps:
+The trained Random Forest model is serialized using Joblib and loaded by the Flask application for prediction.
 
-  * Set up Python environment
-  * Install dependencies
-  * Run unit tests (`test_app.py`)
-  * Build Docker image
-  * (Optional) Push Docker image to Docker Hub
+## Testing
 
-### 4.2 Pipeline for ML Model Flask App
+The project contains automated tests using **Pytest**.
 
-* ML model trained using `train_model.py` and saved as `random_forest_model.joblib`
-* Flask app loads this model and provides predictions via API
-* CI/CD steps:
+### Application Tests
 
-  * Install dependencies
-  * Run tests (`test_model.py`)
-  * Build Docker image
-  * (Optional) Push Docker image to Docker Hub
+`test_app.py` is used to test the Flask application's routes and behavior.
 
----
+### Machine Learning Tests
 
-## 5. GitHub Actions Workflow
+`test_model.py` verifies that the trained model can be loaded and used to generate predictions.
 
-The workflow is defined in `.github/workflows/ci-cd.yml` and includes:
-
-* Trigger on push to `main` branch
-* Setup Python 3.10
-* Install dependencies from `requirements.txt`
-* Run tests with `pytest`
-* Docker login to Docker Hub using GitHub secrets
-* Build and optionally push Docker image
-
----
-
-## 6. Unit Testing
-
-Two test files included:
-
-* `test_app.py` — Tests basic Flask routes
-* `test_model.py` — Tests ML model loading and prediction
-
-Example test snippet:
+Example:
 
 ```python
 from joblib import load
 import numpy as np
 
 def test_model_prediction():
-    model = load('random_forest_model.joblib')
+    model = load("random_forest_model.joblib")
     sample_input = np.array([[1, 2, 3, 4]])
     prediction = model.predict(sample_input)
+
     assert prediction is not None
 ```
 
----
+## CI/CD Pipeline
 
-## 7. Docker Integration
+The CI/CD workflow is implemented using **GitHub Actions**.
 
-### Build Docker Image Locally
+The workflow performs automated steps such as:
+
+```text
+Git Push
+   │
+   ▼
+Checkout Repository
+   │
+   ▼
+Set Up Python
+   │
+   ▼
+Install Dependencies
+   │
+   ▼
+Run Pytest
+   │
+   ▼
+Build Docker Image
+   │
+   ▼
+Docker Hub Authentication
+   │
+   ▼
+Push Docker Image
+```
+
+The workflow configuration is located at:
+
+```text
+.github/workflows/ci-cd.yml
+```
+
+## Docker
+
+The application can be containerized using the included `Dockerfile`.
+
+### Build the Docker Image
 
 ```bash
 docker build -t ci-cd-app .
 ```
 
-### Run Docker Container
+### Run the Container
 
 ```bash
 docker run -p 5000:5000 ci-cd-app
 ```
 
-### Run with Docker Compose
+The application can then be accessed through:
 
-```bash
-docker-compose up
+```text
+http://localhost:5000
 ```
 
----
+## Docker Compose
 
-## 8. Challenges Faced
+The project also includes a Docker Compose configuration.
 
-| Challenge                        | Solution                                 |
-| -------------------------------- | ---------------------------------------- |
-| Git error: `src refspec main...` | Created initial commit, confirmed branch |
-| Docker login issues in Actions   | Used GitHub Secrets for credentials      |
-| Docker push errors               | Verified Dockerfile and credentials      |
+Start the application using:
 
----
+```bash
+docker compose up --build
+```
 
-## 9. Outcome and Deliverables
+Stop the application using:
 
-* CI/CD pipeline for Flask app: Completed
-* CI/CD pipeline for ML app: Completed
-* Dockerfile and Docker Compose support: Included
-* GitHub Actions workflow: Operational
-* Unit tests: Passing successfully
+```bash
+docker compose down
+```
 
----
+## Key Learning Outcomes
 
-## 10. Conclusion
+Through this project, I gained practical experience in:
 
-This project successfully demonstrates the application of professional CI/CD practices to AI and Data Science projects. By integrating automated testing, containerization, and deployment workflows, it simulates a real-world DevOps environment that enhances development efficiency and reliability.
+- Building Flask applications
+- Training and serving machine learning models
+- Writing automated tests
+- Using Pytest for application and model testing
+- Containerizing Python applications with Docker
+- Managing containers with Docker Compose
+- Creating CI/CD workflows with GitHub Actions
+- Automating testing and Docker image builds
+- Integrating machine learning workflows with DevOps practices
 
----
+## Challenges Faced
+
+During development, I worked through issues involving:
+
+- Git branch configuration
+- Docker authentication
+- Docker image push configuration
+- CI/CD workflow configuration
+- Dockerfile configuration
+
+These challenges helped me understand the practical aspects of implementing an automated development and deployment workflow.
+
+## Project Outcome
+
+The completed project demonstrates a complete development workflow in which:
+
+**Code → Automated Testing → Docker Build → Containerized Application**
+
+This provides a practical foundation for applying DevOps practices to Python and machine learning applications.
+
+## Future Improvements
+
+- Add more comprehensive unit and integration tests
+- Add API documentation
+- Add model performance monitoring
+- Add automated model retraining
+- Add security scanning to the CI/CD pipeline
+- Deploy the containerized application to a cloud platform
+- Add monitoring and logging
+
+## Author
+
+**Dinesh Kumar**
+
+GitHub: [Lucky5683](https://github.com/Lucky5683)
+
+## License
+
+This project is licensed under the MIT License.
